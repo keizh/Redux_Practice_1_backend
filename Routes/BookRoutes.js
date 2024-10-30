@@ -48,4 +48,24 @@ BookRouter.delete("/:id", async (req, res) => {
   }
 });
 
+BookRouter.post("/update", async (req, res) => {
+  const { _id, bookName, bookAuthor, bookGenre } = req.body;
+  try {
+    const updatedBook = await BookModel.findByIdAndUpdate(
+      _id,
+      { $set: { bookName, bookAuthor, bookGenre } },
+      { new: true }
+    );
+    if (updatedBook) {
+      res
+        .status(200)
+        .json({ message: "Book Updated Successfully", updatedBook });
+    } else {
+      res.status(400).json({ message: "Failed to update book", updatedBook });
+    }
+  } catch (err) {
+    res.status(500).json({ message: `${err.message}` });
+  }
+});
+
 module.exports = BookRouter;
